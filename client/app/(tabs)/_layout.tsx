@@ -2,33 +2,49 @@ import { Tabs } from 'expo-router';
 import React from 'react';
 
 import { TabBarIcon } from '@/components/navigation/TabBarIcon';
-import { Colors } from '@/constants/theme';
-import { useColorScheme } from '@/hooks/useColorScheme';
+import { useTheme } from 'react-native-paper';
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
+  const theme = useTheme();
 
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
         headerShown: false,
+        tabBarActiveTintColor: theme.colors.tertiary,
+        tabBarInactiveTintColor: theme.colors.secondary,
+        tabBarStyle: {
+          borderTopColor: theme.colors.tertiary,
+          borderTopWidth: 1,
+          backgroundColor: theme.colors.primary,
+        }
       }}>
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Home',
+          tabBarShowLabel: false,
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon name={focused ? 'home' : 'home-outline'} color={color} />
           ),
+          tabBarStyle: { display: 'none' },
+        }}
+      />
+      <Tabs.Screen
+        name="auth"
+        options={{
+          tabBarShowLabel: false,
+          tabBarIcon: ({ color, focused }) => (
+            <TabBarIcon name={focused ? 'home' : 'home-outline'} color={color} />
+          ),
+          tabBarStyle: { display: 'none' },
         }}
       />
       <Tabs.Screen
         name="explore"
         options={{
-          title: 'Explore',
+          tabBarShowLabel: false,
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'code-slash' : 'code-slash-outline'} color={color} />
+            <TabBarIcon name={focused ? 'compass' : 'compass'} color={color} />
           ),
         }}
       />

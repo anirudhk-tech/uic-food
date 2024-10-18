@@ -1,23 +1,9 @@
-import { Dimensions, StyleSheet, View } from "react-native";
-import { useTheme } from "react-native-paper";
+import { useRouter } from "expo-router";
 
-export default function HomeScreen() {
-  const theme = useTheme();
+export default function Index() {
+  const router = useRouter();
 
-  return (
-    <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
-
-    </View>
-  );
+  setTimeout(() => {
+    router.push('./auth');
+  }, 1000);
 };
-
-
-const height = Dimensions.get('window').height;
-const width = Dimensions.get('window').width;
-
-const styles = StyleSheet.create({
-  container: {
-    width: width,
-    height: height,
-  },
-});

@@ -1,21 +1,25 @@
 import { ThemeProp } from "react-native-paper/lib/typescript/types";
 
 const tintColor = '#FF0000';
+const lightColor = '#F5F5F5';
+const darkColor = '#000';
 
 export const lightTheme: ThemeProp = {
   dark: false,
   colors: {
-    primary: '#000',
-    background: '#fff',
-    accent: tintColor,
+    primary: lightColor,
+    secondary: darkColor,
+    background: lightColor,
+    tertiary: tintColor,
   }
 };
 
 export const darkTheme: ThemeProp = {
   dark: true,
   colors: {
-    primary: '#fff',
-    background: '#000',
-    accent: tintColor,
+    primary: darkColor,
+    secondary: lightColor,
+    background: darkColor,
+    tertiary: tintColor,
   }
-}
+};
