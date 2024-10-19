@@ -30,7 +30,7 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="auth"
+        name="create_auth"
         options={{
           tabBarShowLabel: false,
           tabBarIcon: ({ color, focused }) => (

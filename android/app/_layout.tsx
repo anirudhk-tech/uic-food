@@ -1,5 +1,6 @@
 import { PaperProvider } from 'react-native-paper';
 import { useFonts } from 'expo-font';
+import { Montserrat_400Regular } from '@expo-google-fonts/montserrat';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
@@ -10,7 +11,7 @@ SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const [loaded] = useFonts({
-    'Montserrat': require('../assets/fonts/Montserrat.ttf'),
+    'Montserrat': Montserrat_400Regular,
   });
 
   useEffect(() => {
