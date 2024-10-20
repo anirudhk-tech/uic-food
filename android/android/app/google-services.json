@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "632152835759",
+    "project_id": "uic-food",
+    "storage_bucket": "uic-food.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:632152835759:android:44937754ab107d35c2765a",
+        "android_client_info": {
+          "package_name": "com.anirudh_k.uicfood"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "632152835759-cpa7gb6nvbb6ge5rv50itpos1m5i002o.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.anirudh_k.uicfood",
+            "certificate_hash": "36530ecccaa3b8ff671d308c4458b22634f49f8d"
+          }
+        },
+        {
+          "client_id": "632152835759-h7knftftv5j9vi1u120bm8flinlg69bq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCkE8C2D3jhp7BM0ItF8KqBHXNPLuQLyBQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "632152835759-h7knftftv5j9vi1u120bm8flinlg69bq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
