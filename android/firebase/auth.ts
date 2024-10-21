@@ -22,7 +22,18 @@ export const emailPasswordAuth = async (email: string, password: string) => {
         console.log("User logged in with email and password: ", user);
         return user;
     } catch (error: any) {
-        console.log("Error code: ", error.code);
+        console.log("Error logging in: ", error.code);
         return error.code;
     }
+};
+
+export const emailPasswordLogin = async (email: string, password: string) => {
+    try {
+        const user: FirebaseAuthTypes.UserCredential = await auth().signInWithEmailAndPassword(email, password);
+        console.log("User logged in with existing account email and password: ", user);
+        return user;
+    } catch (error: any) {
+        console.log("Error loggin into existing account: ", error.code);
+        return error.code;
+    };
 };

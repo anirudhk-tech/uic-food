@@ -2,11 +2,11 @@ import { useEffect, useRef, useState } from "react";
 import { Dimensions, Keyboard, StyleSheet, TouchableWithoutFeedback, View } from "react-native";
 import { Button, HelperText, Text, TextInput, useTheme } from "react-native-paper";
 import auth from '@react-native-firebase/auth';
-import { googleAuth, emailPasswordAuth } from "../../firebase/auth";
+import { googleAuth, emailPasswordLogin } from "../../firebase/auth";
 import { useUser } from '../../store/user_store';
 import { useRouter } from "expo-router";
 
-export default function SignUpScreen() {
+export default function LoginScreen() {
   const theme = useTheme();
 
   const userInputRef = useRef<any>(null); // References to blur text inputs
@@ -18,25 +18,26 @@ export default function SignUpScreen() {
   const [emailError, setEmailError] = useState<string>('');
   const [passwordError, setPasswordError] = useState<string>('');
 
+  const user = useUser((state: any) => state.user);
   const setUser = useUser((state: any) => state.setUser);
   const router = useRouter();
 
-  const signupWithEmailAndPassword = async () => {
-    if (email.replace(' ', '') == "" || password.replace(' ', '') == "") { // Checking whether inputs are empty
-      setPasswordError("Please enter a password.");
+  const signinWithEmailAndPassword = async () => {
+    if (email.replace(' ', '') === "") { // Checking whether inputs are empty
       setEmailError("Please enter a valid email.");
       return;
-    }
+    } else if (password.replace(' ', '') === "") {
+      setPasswordError("Please enter a password.");
+      return;
+    };
 
-    const res: any = await emailPasswordAuth(email, password);
+    const res: any = await emailPasswordLogin(email, password);
 
-    if (res === "auth/email-already-in-use") { // Responses to error regarding authentication on the user end
-      setEmailError("Email already in use!");
-    } else if (res === "auth/weak-password") {
-      setPasswordError("Password too weak!");
+    if (res === "auth/invalid-credential") { // Responses to user auth errors
+      setEmailError("Invalid credentials. Please check your email/password.");
     } else if (res === "auth/invalid-email") {
-      setEmailError("Invalid email!")
-    } else {}
+      setEmailError("Please enter a valid email.");
+    };
   }
 
   useEffect(() => {
@@ -53,10 +54,16 @@ export default function SignUpScreen() {
     return subscriber; 
   }, []);
 
+  useEffect(() => {
+    if (user != null) {
+      // Implement "a little about yourself screen" and index routing FIXME
+    }
+  }, [user]);
+
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
-        <Text variant="displaySmall" style={styles.title}>Create account</Text>
+        <Text variant="displaySmall" style={styles.title}>Login</Text>
         <View style={styles.inputContainer}>
             <View>
               <Text style={styles.prompt}>Email</Text>
@@ -106,16 +113,16 @@ export default function SignUpScreen() {
         mode="contained"
         labelStyle={styles.signupButtonLabel}
         style={styles.signupButton}
-        onPress={signupWithEmailAndPassword}
-        >Sign up</Button>
+        onPress={signinWithEmailAndPassword}
+        >Log in</Button>
         <View style={styles.loginLinkContainer}>
-          <Text style={styles.loginPrompt}>Already have an account?</Text>
+          <Text style={styles.loginPrompt}>Don't have an account?</Text>
           <Text 
           style={[
             styles.loginLink, 
             { color: theme.colors.tertiary, textDecorationColor: theme.colors.tertiary }
           ]}
-          onPress={() => router.navigate('./login_auth')}>Log in</Text>
+          onPress={() => router.navigate('./create_auth')}>Create one!</Text>
         </View>
         <Button
         buttonColor={theme.colors.tertiary}
@@ -123,7 +130,7 @@ export default function SignUpScreen() {
         icon="google"
         style={styles.signupButton}
         onPress={googleAuth}
-        >Sign up with Google</Button>
+        >Log in with Google</Button>
       </View>
     </TouchableWithoutFeedback>
   );

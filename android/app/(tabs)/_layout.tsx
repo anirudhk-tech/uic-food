@@ -33,19 +33,14 @@ export default function TabLayout() {
         name="create_auth"
         options={{
           tabBarShowLabel: false,
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'home' : 'home-outline'} color={color} />
-          ),
           tabBarStyle: { display: 'none' },
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="login_auth"
         options={{
           tabBarShowLabel: false,
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'compass' : 'compass'} color={color} />
-          ),
+          tabBarStyle: { display: 'none' },
         }}
       />
     </Tabs>
