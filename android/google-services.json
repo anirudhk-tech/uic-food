@@ -14,11 +14,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "632152835759-cpa7gb6nvbb6ge5rv50itpos1m5i002o.apps.googleusercontent.com",
+          "client_id": "632152835759-q9b94iepo1su5fgfr54n1rfqfrvs8fgo.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.anirudh_k.uicfood",
-            "certificate_hash": "36530ecccaa3b8ff671d308c4458b22634f49f8d"
+            "certificate_hash": "04d4d6f851cd494d7e3b560398b3d3698448f984"
           }
         },
         {

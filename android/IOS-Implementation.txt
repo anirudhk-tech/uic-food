@@ -1,3 +1,2 @@
 firebase/auth
 firebase/app
-firebase/crashlytics

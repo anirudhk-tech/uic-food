@@ -1,0 +1,16 @@
+node_modules/
+npm-debug.log
+.yarn/cache/
+.expo
+.expo-shared
+*.log
+.DS_Store
+*.tmp
+*.swp
+.vscode/
+.idea/
+Thumbs.db
+.env.local
+.expo/
+.expo-shared/
+.git

@@ -20,7 +20,7 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "googleServicesFile": "./android/google-services.json",
+      "googleServicesFile": "./google-services.json",
       "package": "com.anirudh_k.uicfood"
     },
     "web": {
