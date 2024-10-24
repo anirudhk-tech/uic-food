@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import { Dimensions, Keyboard, StyleSheet, TouchableWithoutFeedback, View } from "react-native";
-import { Button, HelperText, Text, TextInput, useTheme } from "react-native-paper";
+import { ActivityIndicator, Button, HelperText, Text, TextInput, useTheme } from "react-native-paper";
 import auth from '@react-native-firebase/auth';
 import { googleAuth, emailPasswordLogin } from "../../firebase/auth";
 import { useUser } from '../../store/user_store';
-import { useRouter } from "expo-router";
+import { useRouter, useSegments } from "expo-router";
 
 export default function LoginScreen() {
   const theme = useTheme();
@@ -17,10 +17,13 @@ export default function LoginScreen() {
   const [password, setPassword] = useState('');
   const [emailError, setEmailError] = useState<string>('');
   const [passwordError, setPasswordError] = useState<string>('');
+  const [activityBuffer, setActivityBuffer] = useState(false);
 
+  const firstTime = useUser((state: any) => state.firstTime);
   const user = useUser((state: any) => state.user);
   const setUser = useUser((state: any) => state.setUser);
   const router = useRouter();
+  const segments = useSegments();
 
   const signinWithEmailAndPassword = async () => {
     if (email.replace(' ', '') === "") { // Checking whether inputs are empty
@@ -50,19 +53,34 @@ export default function LoginScreen() {
   });
 
   useEffect(() => {
-    const subscriber = auth().onAuthStateChanged((user) => { setUser(user) });
-    return subscriber; 
+    if (segments[segments.length - 1] === "login_auth") {
+      const subscriber = auth().onAuthStateChanged((user) => { 
+        setUser(user); 
+      });
+      return subscriber; 
+    };
   }, []);
 
   useEffect(() => {
-    if (user != null) {
-      // Implement "a little about yourself screen" and index routing FIXME
-    }
+    if (user && segments[segments.length - 1] === "login_auth") {
+      if (firstTime) {
+        console.log("User's first time: ", JSON.stringify(user, null, 2));
+        setActivityBuffer(true);
+        setTimeout(() => router.replace('./about_you'), 1500);
+      } else {
+        console.log("User found.");
+        setActivityBuffer(true);
+        setTimeout(() => router.replace('./home'), 1500);
+      };
+    };
   }, [user]);
 
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
+        { activityBuffer ? 
+          <ActivityIndicator animating={true} color={theme.colors.tertiary}/> : null
+        }
         <Text variant="displaySmall" style={styles.title}>Login</Text>
         <View style={styles.inputContainer}>
             <View>
@@ -74,7 +92,7 @@ export default function LoginScreen() {
                 setEmailError('');
               }}
               mode="outlined"
-              outlineColor="#D3D3D3"
+              outlineColor={ theme.colors.surfaceDisabled }
               activeOutlineColor={theme.colors.tertiary}
               contentStyle={styles.textInput}
               style={styles.textInput}/>
@@ -95,7 +113,7 @@ export default function LoginScreen() {
               }}
               secureTextEntry={hidePassword} // Making password entry dots
               mode="outlined"
-              outlineColor="#D3D3D3" 
+              outlineColor={ theme.colors.surfaceDisabled } 
               activeOutlineColor={theme.colors.tertiary}
               style={styles.textInput}
               right={<TextInput.Icon icon="eye" onPress={() => setHidePassword(prev => !prev)}/>}
@@ -122,7 +140,7 @@ export default function LoginScreen() {
             styles.loginLink, 
             { color: theme.colors.tertiary, textDecorationColor: theme.colors.tertiary }
           ]}
-          onPress={() => router.navigate('./create_auth')}>Create one!</Text>
+          onPress={() => router.replace('./create_auth')}>Create one!</Text>
         </View>
         <Button
         buttonColor={theme.colors.tertiary}
@@ -196,5 +214,4 @@ const styles = StyleSheet.create({
     fontFamily: 'Montserrat',
     fontSize: 13, 
   },
-
 });

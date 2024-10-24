@@ -3,6 +3,7 @@ import React from 'react';
 
 import { TabBarIcon } from '@/components/navigation/TabBarIcon';
 import { useTheme } from 'react-native-paper';
+import { StyleSheet } from 'react-native';
 
 export default function TabLayout() {
   const theme = useTheme();
@@ -17,16 +18,14 @@ export default function TabLayout() {
           borderTopColor: theme.colors.tertiary,
           borderTopWidth: 1,
           backgroundColor: theme.colors.primary,
-        }
+        },
       }}>
       <Tabs.Screen
         name="index"
         options={{
           tabBarShowLabel: false,
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'home' : 'home-outline'} color={color} />
-          ),
           tabBarStyle: { display: 'none' },
+          tabBarButton: () => null,
         }}
       />
       <Tabs.Screen
@@ -34,6 +33,7 @@ export default function TabLayout() {
         options={{
           tabBarShowLabel: false,
           tabBarStyle: { display: 'none' },
+          tabBarButton: () => null,
         }}
       />
       <Tabs.Screen
@@ -41,8 +41,34 @@ export default function TabLayout() {
         options={{
           tabBarShowLabel: false,
           tabBarStyle: { display: 'none' },
+          tabBarButton: () => null,
+        }}
+      />
+      <Tabs.Screen
+        name="about_you"
+        options={{
+          tabBarShowLabel: false,
+          tabBarStyle: { display: 'none' },
+          tabBarButton: () => null,
+        }}
+      />
+      <Tabs.Screen
+        name="home"
+        options={{
+          title: "Home",
+          tabBarShowLabel: false,
+          tabBarLabelStyle: [styles.labelStyle, { color: theme.colors.tertiary }],
+          tabBarIcon: ({ focused }) => (
+            <TabBarIcon name={'home'} color={focused ? theme.colors.tertiary : theme.colors.secondary}/>
+          ),
         }}
       />
     </Tabs>
   );
-}
+};
+
+const styles = StyleSheet.create({
+  labelStyle: {
+    fontFamily: 'Montserrat',
+  }  
+})

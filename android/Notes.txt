@@ -1,0 +1,6 @@
+IOS implement:
+    firebase/auth
+    firebase/app
+
+Data set:
+    Restaurant - Food type, position (longitude and langitude), price range, delivery available, veggie only

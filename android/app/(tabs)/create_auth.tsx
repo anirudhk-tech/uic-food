@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import { Dimensions, Keyboard, StyleSheet, TouchableWithoutFeedback, View } from "react-native";
-import { Button, HelperText, Text, TextInput, useTheme } from "react-native-paper";
+import { Button, HelperText, Text, TextInput, useTheme, ActivityIndicator } from "react-native-paper";
 import auth from '@react-native-firebase/auth';
 import { googleAuth, emailPasswordAuth } from "../../firebase/auth";
 import { useUser } from '../../store/user_store';
-import { useRouter } from "expo-router";
+import { useRouter, useSegments } from "expo-router";
 
 export default function SignUpScreen() {
   const theme = useTheme();
@@ -12,14 +12,18 @@ export default function SignUpScreen() {
   const userInputRef = useRef<any>(null); // References to blur text inputs
   const passInputRef = useRef<any>(null);
 
+  const [activityBuffer, setActivityBuffer] = useState(false);
   const [hidePassword, setHidePassword] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [emailError, setEmailError] = useState<string>('');
   const [passwordError, setPasswordError] = useState<string>('');
 
+  const user = useUser((state: any) => state.user);
   const setUser = useUser((state: any) => state.setUser);
+  const firstTime = useUser((state: any) => state.firstTime);
   const router = useRouter();
+  const segments = useSegments();
 
   const signupWithEmailAndPassword = async () => {
     if (email.replace(' ', '') == "" || password.replace(' ', '') == "") { // Checking whether inputs are empty
@@ -49,13 +53,32 @@ export default function SignUpScreen() {
   });
 
   useEffect(() => {
-    const subscriber = auth().onAuthStateChanged((user) => { setUser(user) });
-    return subscriber; 
+    if (segments[segments.length - 1] === "create_auth") {
+      const subscriber = auth().onAuthStateChanged((user) => { setUser(user) });
+      return subscriber; 
+    };
   }, []);
+
+  useEffect(() => {
+    if (user && segments[segments.length - 1] === "create_auth") {
+      if (firstTime) {
+        console.log("User's first time: ", user);
+        setActivityBuffer(true);
+        setTimeout(() => router.replace('./about_you'), 1000);
+      } else {
+        console.log("User found.");
+        setActivityBuffer(true);
+        setTimeout(() => router.replace('./home'), 1000);
+      };
+    };
+  }, [user]);
 
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
+        { activityBuffer ? 
+          <ActivityIndicator animating={true} color={theme.colors.tertiary}/> : null
+        }
         <Text variant="displaySmall" style={styles.title}>Create account</Text>
         <View style={styles.inputContainer}>
             <View>
@@ -88,7 +111,7 @@ export default function SignUpScreen() {
               }}
               secureTextEntry={hidePassword} // Making password entry dots
               mode="outlined"
-              outlineColor="#D3D3D3" 
+              outlineColor={theme.colors.surfaceDisabled}
               activeOutlineColor={theme.colors.tertiary}
               style={styles.textInput}
               right={<TextInput.Icon icon="eye" onPress={() => setHidePassword(prev => !prev)}/>}
@@ -115,7 +138,7 @@ export default function SignUpScreen() {
             styles.loginLink, 
             { color: theme.colors.tertiary, textDecorationColor: theme.colors.tertiary }
           ]}
-          onPress={() => router.navigate('./login_auth')}>Log in</Text>
+          onPress={() => router.replace('./login_auth')}>Log in</Text>
         </View>
         <Button
         buttonColor={theme.colors.tertiary}
