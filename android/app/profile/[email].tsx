@@ -7,6 +7,7 @@ import { SecondaryAppBar } from "@/components/common/secondaryAppbar";
 
 export default function Profile () {
     const user = useUser((state: any) => state.user);
+    const customDisplayName = useUser((state: any) => state.customDisplayName);
     const theme = useTheme();
     const router = useRouter();
 
@@ -19,7 +20,7 @@ export default function Profile () {
                     size={125} 
                     source={{ uri: user.photoURL }} 
                     />
-                    <Text style={styles.name}>{user.customDisplayName ? user.customDisplayName : user.displayName}</Text>
+                    <Text style={styles.name}>{customDisplayName !== "" ? customDisplayName : user.displayName}</Text>
                     <Text style={[styles.email, { color: 'gray' }]}>{user.email}</Text>
                     <Button 
                     buttonColor={theme.colors.tertiary} 

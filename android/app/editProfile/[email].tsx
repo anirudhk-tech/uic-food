@@ -1,6 +1,6 @@
 import { SecondaryAppBar } from "@/components/common/secondaryAppbar";
 import { useUser } from "@/store/user_store";
-import { Stack, useLocalSearchParams } from "expo-router"
+import { useLocalSearchParams } from "expo-router"
 import { useState, useEffect, useRef } from "react";
 import { StyleSheet, View, Keyboard, TouchableWithoutFeedback } from "react-native";
 import { Text, TextInput, useTheme } from "react-native-paper";
@@ -8,20 +8,19 @@ import { Text, TextInput, useTheme } from "react-native-paper";
 export default function EditProfile () {
     const { email } = useLocalSearchParams();
     const user = useUser((state: any) => state.user);
-    const setUser = useUser((state: any) => state.setUser);
-    const [newName, setNewName] = useState(user.customDisplayName ? user.customDisplayName : user.displayName)
+    const customDisplayName = useUser((state: any) => state.customDisplayName);
+    const changeCustomDisplayName = useUser((state: any) => state.changeCustomDisplayName);
+    const [newName, setNewName] = useState(customDisplayName !== "" ? customDisplayName : user.displayName)
     const theme = useTheme();
     const inputRef = useRef<any>(null);
     
-    const changeUserName = () => {
-        setUser({ ...user, customDisplayName: newName, photoURL: user.photoURL });
-        console.log("Set new username: ", JSON.stringify(user, null, 2));
+    const changeUsernameWithNewname = () => {
+        changeCustomDisplayName(newName);
     };
 
     useEffect(() => {
         const keyboardListener = Keyboard.addListener('keyboardDidHide', () => {
           inputRef.current.blur();
-          changeUserName();
         });
     
         return () => keyboardListener.remove();
@@ -30,7 +29,7 @@ export default function EditProfile () {
     return (
         <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
             <View style={styles.container}>
-                <SecondaryAppBar title={"Edit Profile"}/>
+                <SecondaryAppBar title={"Edit Profile"} backAction={changeUsernameWithNewname}/>
                 <View style={styles.profileDetailsContainer}>
                         <View style={styles.profileDetailBar}>
                             <Text style={styles.profileDetailBarText}>Name |  </Text>

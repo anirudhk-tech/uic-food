@@ -8,8 +8,7 @@ import { useRouter, useSegments } from "expo-router";
 
 export default function AboutYou () {
     const theme = useTheme();
-    const user = useUser((state: any) => state.user);
-    const setUser = useUser((state: any) => state.setUser);
+    const changeCustomDisplayName = useUser((state: any) => state.changeCustomDisplayName);
     const displayNameInput = useRef<any>(null);
     const setFirstTime = useUser((state: any) => state.setFirstTime);
     const router = useRouter();
@@ -19,8 +18,7 @@ export default function AboutYou () {
 
     const redirectUser = () => {
         if (userName.replace(/\s/g, "") !== "") {
-            user["customDisplayName"] = userName;
-            setUser(user);
+            changeCustomDisplayName(userName);
         } else {
             setDisplayNameHelperText(true); // Display name field must be filled
             return;

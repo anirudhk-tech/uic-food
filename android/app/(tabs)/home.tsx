@@ -1,15 +1,14 @@
 import { AppBar } from "@/components/common/appbar";
-import { useFood } from "@/store/food_store";
 import { useUser } from "@/store/user_store";
-import { useState } from "react";
-import { StyleSheet, View, ScrollView, TouchableOpacity } from "react-native";
-import { Avatar, Button, Surface, Text, useTheme } from "react-native-paper";
+import { StyleSheet, View, TouchableOpacity } from "react-native";
+import { Avatar, Button, Text, useTheme } from "react-native-paper";
 import { Filter } from "@/components/home/filter";
 import { useRouter } from "expo-router";
 
 export default function Home () {
     const theme = useTheme();
     const user = useUser((state: any) => state.user);
+    const customDisplayName = useUser((state: any) => state.customDisplayName);
     const router = useRouter();
 
     return (
@@ -18,7 +17,7 @@ export default function Home () {
             <View style={styles.subContainer}>
                 <View style={styles.userInfoContainer}>
                     <View style={{ width: '80%' }}>
-                        <Text style={[styles.userGreetingText, { fontSize: 20 }]}>Hello {user.customDisplayName ? user.customDisplayName : user.displayName}</Text>
+                        <Text style={[styles.userGreetingText, { fontSize: 20 }]}>Hello {customDisplayName !== "" ? customDisplayName : user.displayName}</Text>
                         <Text style={[styles.userGreetingText, { fontSize: 30, marginTop: '5%', color: theme.colors.tertiary }]}>Hungry?</Text>
                     </View>
                     <TouchableOpacity onPress={() => router.navigate(`../profile/${user.email}`)}>
