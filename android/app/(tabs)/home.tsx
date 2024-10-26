@@ -1,5 +1,5 @@
 import { AppBar } from "@/components/common/appbar";
-import { useUser } from "@/store/user_store";
+import { useLocalUserInfo, useUser } from "@/store/user_store";
 import { StyleSheet, View, TouchableOpacity } from "react-native";
 import { Avatar, Button, Text, useTheme } from "react-native-paper";
 import { Filter } from "@/components/home/filter";
@@ -8,7 +8,7 @@ import { useRouter } from "expo-router";
 export default function Home () {
     const theme = useTheme();
     const user = useUser((state: any) => state.user);
-    const customDisplayName = useUser((state: any) => state.customDisplayName);
+    const customDisplayName = useLocalUserInfo((state: any) => state.customDisplayName);
     const router = useRouter();
 
     return (

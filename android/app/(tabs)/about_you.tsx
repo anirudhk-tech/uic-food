@@ -3,14 +3,16 @@ import { View, StyleSheet, TouchableWithoutFeedback, Keyboard } from "react-nati
 import { HelperText, Text, TextInput, useTheme, Button } from "react-native-paper";
 import { testFoodTypes } from "@/assets/test_data";
 import { useEffect, useRef, useState } from "react";
-import { useUser } from "@/store/user_store";
+import { useLocalUserInfo, useUser } from "@/store/user_store";
 import { useRouter, useSegments } from "expo-router";
+import { addUser } from "@/firebase/firestore";
 
 export default function AboutYou () {
     const theme = useTheme();
-    const changeCustomDisplayName = useUser((state: any) => state.changeCustomDisplayName);
+    const setCustomDisplayName = useLocalUserInfo((state: any) => state.setCustomDisplayName);
+    const user = useUser((state: any) => state.user);
     const displayNameInput = useRef<any>(null);
-    const setFirstTime = useUser((state: any) => state.setFirstTime);
+    const setFirstTime = useLocalUserInfo((state: any) => state.setFirstTime);
     const router = useRouter();
     const [userName, setUserName] = useState("");
     const [displayNameHelperText, setDisplayNameHelperText] = useState(false);
@@ -18,7 +20,8 @@ export default function AboutYou () {
 
     const redirectUser = () => {
         if (userName.replace(/\s/g, "") !== "") {
-            changeCustomDisplayName(userName);
+            setCustomDisplayName(userName);
+            addUser(user);
         } else {
             setDisplayNameHelperText(true); // Display name field must be filled
             return;
@@ -42,7 +45,7 @@ export default function AboutYou () {
         <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
             <View style={styles.container}>
                 <Text variant="displaySmall" style={[styles.title, { color: theme.colors.tertiary }]}>Now a little about yourself...</Text>
-                <HelperText type="info" style={styles.helperText}>User Name</HelperText>
+                <HelperText type="info" style={styles.helperText}>Display Name</HelperText>
                 {
                     displayNameHelperText ? <HelperText type="info" style={{ 
                         color: theme.colors.tertiary, 

@@ -1,15 +1,22 @@
 import { AppBar } from "@/components/common/appbar"
 import { View, StyleSheet } from "react-native"
 import { Avatar, Button, Text, useTheme } from "react-native-paper"
-import { useUser } from "@/store/user_store";
+import { useLocalUserInfo, useUser } from "@/store/user_store";
 import { useRouter } from "expo-router";
 import { SecondaryAppBar } from "@/components/common/secondaryAppbar";
+import { googleLogout } from "@/firebase/auth";
 
 export default function Profile () {
     const user = useUser((state: any) => state.user);
-    const customDisplayName = useUser((state: any) => state.customDisplayName);
+    const customDisplayName = useLocalUserInfo((state: any) => state.customDisplayName);
     const theme = useTheme();
     const router = useRouter();
+
+    const signOut = () => {
+        googleLogout();
+        router.dismissAll();
+        router.replace('/(tabs)/login_auth');
+    }
 
     return (
         <View style={styles.container}>
@@ -29,6 +36,13 @@ export default function Profile () {
                     style={{ marginTop: '5%' }}
                     onPress={() => router.push(`../editProfile/${user.email}`)}
                     >Edit Profile</Button>
+                    <Button 
+                    buttonColor={theme.colors.tertiary} 
+                    textColor={theme.colors.primary}
+                    labelStyle={{ fontFamily: 'Montserrat' }}
+                    style={{ marginTop: '5%' }}
+                    onPress={signOut}
+                    >Logout</Button>
                 </View>
             </View>
         </View>

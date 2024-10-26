@@ -16,6 +16,16 @@ export const googleAuth = async () => {
     return userSignOn;
 };
 
+export const googleLogout = async () => {
+    GoogleSignin.configure({
+        webClientId: "632152835759-h7knftftv5j9vi1u120bm8flinlg69bq.apps.googleusercontent.com",
+    });
+    await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
+    
+    auth().signOut();
+    console.log("User signed out.");
+};
+
 export const emailPasswordAuth = async (email: string, password: string) => {
     try {
         const user: FirebaseAuthTypes.UserCredential = await auth().createUserWithEmailAndPassword(email, password);
