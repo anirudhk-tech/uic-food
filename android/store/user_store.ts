@@ -18,15 +18,11 @@ export const useUser = create<UserState>(
 interface LocalUserState {
     customDisplayName: string;
     setCustomDisplayName: (value: string) => void;
-    firstTime: boolean;
-    setFirstTime: (value: boolean) => void;
 }
 
 export const useLocalUserInfo = create<LocalUserState>(
     (set) => ({
         customDisplayName: "",
-        setCustomDisplayName: (value: string) => set({ customDisplayName: value }),
-        firstTime: true,
-        setFirstTime: (value: boolean) => set({ firstTime: value }),
+        setCustomDisplayName: (value) => set({ customDisplayName: value }),
     }),
 );

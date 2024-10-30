@@ -19,9 +19,7 @@ export default function SignUpScreen() {
   const [emailError, setEmailError] = useState<string>('');
   const [passwordError, setPasswordError] = useState<string>('');
 
-  const user = useUser((state: any) => state.user);
   const setUser = useUser((state: any) => state.setUser);
-  const firstTime = useUser((state: any) => state.firstTime);
   const router = useRouter();
   const segments = useSegments();
 
@@ -54,24 +52,20 @@ export default function SignUpScreen() {
 
   useEffect(() => {
     if (segments[segments.length - 1] === "create_auth") {
-      const subscriber = auth().onAuthStateChanged((user) => { setUser(user) });
+      const subscriber = auth().onAuthStateChanged((user) => { 
+        setUser(user);
+        if (user) { // Avoiding initial connection
+          setActivityBuffer(true);
+          console.log("User's first time: ", user);
+          setTimeout(() => {
+            router.replace('./about_you'), 1000;
+            setActivityBuffer(false);
+          });
+        };
+      });
       return subscriber; 
     };
   }, []);
-
-  useEffect(() => {
-    if (user && segments[segments.length - 1] === "create_auth") {
-      if (firstTime) {
-        console.log("User's first time: ", user);
-        setActivityBuffer(true);
-        setTimeout(() => router.replace('./about_you'), 1000);
-      } else {
-        console.log("User found.");
-        setActivityBuffer(true);
-        setTimeout(() => router.replace('./home'), 1000);
-      };
-    };
-  }, [user]);
 
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>

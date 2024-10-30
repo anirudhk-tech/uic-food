@@ -8,7 +8,6 @@ import { googleLogout } from "@/firebase/auth";
 
 export default function Profile () {
     const user = useUser((state: any) => state.user);
-    const customDisplayName = useLocalUserInfo((state: any) => state.customDisplayName);
     const theme = useTheme();
     const router = useRouter();
 
@@ -16,18 +15,24 @@ export default function Profile () {
         googleLogout();
         router.dismissAll();
         router.replace('/(tabs)/login_auth');
-    }
+    };
 
     return (
         <View style={styles.container}>
             <SecondaryAppBar title={"Profile"}/>
             <View style={styles.subContainer}>
                 <View style={{ justifyContent: 'center', alignItems: 'center', gap: 5 }}>
-                    <Avatar.Image 
-                    size={125} 
-                    source={{ uri: user.photoURL }} 
-                    />
-                    <Text style={styles.name}>{customDisplayName !== "" ? customDisplayName : user.displayName}</Text>
+                    {user?.profile_photo_url ?
+                        <Avatar.Image 
+                        size={125} 
+                        source={{ uri: user.profile_photo_url }} 
+                        /> :
+                        <Avatar.Image 
+                        size={125} 
+                        source={require('../../assets/images/no_profile.jpg')} 
+                        />
+                    }
+                    <Text style={styles.name}>{user?.display_name ? user.display_name : null}</Text>
                     <Text style={[styles.email, { color: 'gray' }]}>{user.email}</Text>
                     <Button 
                     buttonColor={theme.colors.tertiary} 

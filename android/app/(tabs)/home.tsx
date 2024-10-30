@@ -1,15 +1,27 @@
 import { AppBar } from "@/components/common/appbar";
-import { useLocalUserInfo, useUser } from "@/store/user_store";
+import { useUser } from "@/store/user_store";
 import { StyleSheet, View, TouchableOpacity } from "react-native";
 import { Avatar, Button, Text, useTheme } from "react-native-paper";
 import { Filter } from "@/components/home/filter";
 import { useRouter } from "expo-router";
+import { useEffect, useState } from "react";
+import { fetchUser } from "@/firebase/firestore";
 
 export default function Home () {
     const theme = useTheme();
     const user = useUser((state: any) => state.user);
-    const customDisplayName = useLocalUserInfo((state: any) => state.customDisplayName);
+    const setUser = useUser((state: any) => state.setUser);
     const router = useRouter();
+
+    useEffect(() => {
+        const resetUser = async () => { // Replacing auth object with stored user data
+            await fetchUser(user.email).then(data => {
+                setUser(data);
+                console.log("User object has been replaced: ", data);
+            });
+        };
+        resetUser();
+    }, []);
 
     return (
         <View style={styles.container}>
@@ -17,14 +29,20 @@ export default function Home () {
             <View style={styles.subContainer}>
                 <View style={styles.userInfoContainer}>
                     <View style={{ width: '80%' }}>
-                        <Text style={[styles.userGreetingText, { fontSize: 20 }]}>Hello {customDisplayName !== "" ? customDisplayName : user.displayName}</Text>
+                        <Text style={[styles.userGreetingText, { fontSize: 20 }]}>Hello {user?.display_name ? user.display_name : ""}</Text>
                         <Text style={[styles.userGreetingText, { fontSize: 30, marginTop: '5%', color: theme.colors.tertiary }]}>Hungry?</Text>
                     </View>
                     <TouchableOpacity onPress={() => router.navigate(`../profile/${user.email}`)}>
+                    {user?.profile_photo_url ?
                         <Avatar.Image 
-                        size={40} 
-                        source={{ uri: user.photoURL }} 
-                        style={styles.userProfile}/>
+                        size={50} 
+                        source={{ uri: user.profile_photo_url }} 
+                        /> :
+                        <Avatar.Image 
+                        size={50} 
+                        source={require('../../assets/images/no_profile.jpg')} 
+                        />
+                    }
                     </TouchableOpacity>
                 </View>
                 <Filter/>

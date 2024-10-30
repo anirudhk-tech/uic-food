@@ -5,6 +5,7 @@ import auth from '@react-native-firebase/auth';
 import { googleAuth, emailPasswordLogin } from "../../firebase/auth";
 import { useUser } from '../../store/user_store';
 import { useRouter, useSegments } from "expo-router";
+import { fetchUser } from "@/firebase/firestore";
 
 export default function LoginScreen() {
   const theme = useTheme();
@@ -19,8 +20,6 @@ export default function LoginScreen() {
   const [passwordError, setPasswordError] = useState<string>('');
   const [activityBuffer, setActivityBuffer] = useState(false);
 
-  const firstTime = useUser((state: any) => state.firstTime);
-  const user = useUser((state: any) => state.user);
   const setUser = useUser((state: any) => state.setUser);
   const router = useRouter();
   const segments = useSegments();
@@ -53,27 +52,28 @@ export default function LoginScreen() {
   });
 
   useEffect(() => {
+    const navigate = async (user: any) => {
+      const userExists = await fetchUser(user.email);
+      if (userExists) {
+        router.replace('./home');
+      } else {
+        router.replace('./about_you');
+      };
+      setActivityBuffer(false);
+    };
+
     if (segments[segments.length - 1] === "login_auth") {
       const subscriber = auth().onAuthStateChanged((user) => { 
-        setUser(user); 
+        if (user) { // Avoids initial connection
+          setUser(user);
+          setActivityBuffer(true);
+          console.log("User found: ", user);
+          setTimeout(() => navigate(user), 1000);
+        };
       });
       return subscriber; 
     };
   }, []);
-
-  useEffect(() => {
-    if (user && segments[segments.length - 1] === "login_auth") {
-      if (firstTime) {
-        console.log("User's first time: ", JSON.stringify(user, null, 2));
-        setActivityBuffer(true);
-        setTimeout(() => router.replace('./about_you'), 1500);
-      } else {
-        console.log("User found.");
-        setActivityBuffer(true);
-        setTimeout(() => router.replace('./home'), 1500);
-      };
-    };
-  }, [user]);
 
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>

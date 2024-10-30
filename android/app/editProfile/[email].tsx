@@ -1,4 +1,5 @@
 import { SecondaryAppBar } from "@/components/common/secondaryAppbar";
+import { editUsername } from "@/firebase/firestore";
 import { useLocalUserInfo, useUser } from "@/store/user_store";
 import { useLocalSearchParams } from "expo-router"
 import { useState, useEffect, useRef } from "react";
@@ -6,11 +7,9 @@ import { StyleSheet, View, Keyboard, TouchableWithoutFeedback } from "react-nati
 import { Text, TextInput, useTheme } from "react-native-paper";
 
 export default function EditProfile () {
-    const { email } = useLocalSearchParams();
     const user = useUser((state: any) => state.user);
-    const customDisplayName = useLocalUserInfo((state: any) => state.customDisplayName);
-    const setCustomDisplayName = useLocalUserInfo((state: any) => state.setCustomDisplayName);
-    const [newName, setNewName] = useState(customDisplayName !== "" ? customDisplayName : user.displayName)
+    const setUser = useUser((state: any) => state.setUser);
+    const [newName, setNewName] = useState(user.display_name);
     const theme = useTheme();
     const inputRef = useRef<any>(null);
 
@@ -25,7 +24,10 @@ export default function EditProfile () {
     return (
         <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
             <View style={styles.container}>
-                <SecondaryAppBar title={"Edit Profile"} backAction={() => setCustomDisplayName(newName)}/>
+                <SecondaryAppBar title={"Edit Profile"} backAction={() => {
+                    editUsername(user.email, newName);
+                    setUser({...user, display_name: newName});
+                }}/>
                 <View style={styles.profileDetailsContainer}>
                         <View style={styles.profileDetailBar}>
                             <Text style={styles.profileDetailBarText}>Name |  </Text>

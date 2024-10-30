@@ -9,25 +9,21 @@ import { addUser } from "@/firebase/firestore";
 
 export default function AboutYou () {
     const theme = useTheme();
-    const setCustomDisplayName = useLocalUserInfo((state: any) => state.setCustomDisplayName);
     const user = useUser((state: any) => state.user);
     const displayNameInput = useRef<any>(null);
-    const setFirstTime = useLocalUserInfo((state: any) => state.setFirstTime);
     const router = useRouter();
-    const [userName, setUserName] = useState("");
+    const [userName, setUsername] = useState("");
     const [displayNameHelperText, setDisplayNameHelperText] = useState(false);
     const segments = useSegments();
 
     const redirectUser = () => {
         if (userName.replace(/\s/g, "") !== "") {
-            setCustomDisplayName(userName);
-            addUser(user);
+            addUser(user, userName);
         } else {
             setDisplayNameHelperText(true); // Display name field must be filled
             return;
         };
 
-        setFirstTime(false);
         router.replace('./home');
     };
 
@@ -39,7 +35,7 @@ export default function AboutYou () {
         
             return () => keyboardListener.remove();
         };
-    });
+    }, []);
 
     return (
         <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
@@ -62,7 +58,7 @@ export default function AboutYou () {
                 textColor={theme.colors.secondary}
                 activeOutlineColor={theme.colors.tertiary}
                 onChangeText={(text) => {
-                    setUserName(text);
+                    setUsername(text);
                     setDisplayNameHelperText(false);
                 }}
                 />
