@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useFood } from '@/store/food_store';
 import { View, StyleSheet } from 'react-native';
 import { testDistanceTypes, testFoodTypes, testPriceTypes } from '@/assets/test_data';
@@ -34,7 +34,6 @@ export const Filter: React.FC = () => {
             setVeggieOnly(false);
         };
     };
-
     
     return (
         <View style={styles.container}>

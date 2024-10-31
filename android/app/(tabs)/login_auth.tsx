@@ -40,7 +40,7 @@ export default function LoginScreen() {
     } else if (res === "auth/invalid-email") {
       setEmailError("Please enter a valid email.");
     };
-  }
+  };
 
   useEffect(() => {
     const keyboardListener = Keyboard.addListener('keyboardDidHide', () => {
@@ -54,10 +54,12 @@ export default function LoginScreen() {
   useEffect(() => {
     const navigate = async (user: any) => {
       const userExists = await fetchUser(user.email);
-      if (userExists) {
+      if (userExists) { // User found
         router.replace('./home');
-      } else {
+      } else if (userExists === null) { // User not found
         router.replace('./about_you');
+      } else { // User logged out
+        return;
       };
       setActivityBuffer(false);
     };
@@ -66,7 +68,6 @@ export default function LoginScreen() {
       const subscriber = auth().onAuthStateChanged((user) => { 
         if (user) { // Avoids initial connection
           setUser(user);
-          setActivityBuffer(true);
           console.log("User found: ", user);
           setTimeout(() => navigate(user), 1000);
         };

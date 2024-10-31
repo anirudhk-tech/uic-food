@@ -4,14 +4,34 @@ import { StyleSheet, View, TouchableOpacity } from "react-native";
 import { Avatar, Button, Text, useTheme } from "react-native-paper";
 import { Filter } from "@/components/home/filter";
 import { useRouter } from "expo-router";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { fetchUser } from "@/firebase/firestore";
+import { fetchData } from "@/app/api/api";
+import { useFood } from "@/store/food_store";
 
 export default function Home () {
     const theme = useTheme();
     const user = useUser((state: any) => state.user);
     const setUser = useUser((state: any) => state.setUser);
     const router = useRouter();
+
+    // Filter options
+    const foodType = useFood((state: any) => state.foodType);
+    const priceMax = useFood((state: any) => state.priceMax);
+    const distanceMax = useFood((state: any) => state.distanceMax);
+    const deliveryOnly = useFood((state: any) => state.deliveryOnly);
+    const veggieOnly = useFood((state: any) => state.veggieOnly);
+
+    const onEatPress = () => {
+        const data = {
+            categories: foodType,
+            deliveryOnly: deliveryOnly,
+            veggieOnly: veggieOnly,
+            priceMax: priceMax,
+            distanceMax: distanceMax,
+        };
+        fetchData(data);
+    };
 
     useEffect(() => {
         const resetUser = async () => { // Replacing auth object with stored user data
@@ -49,7 +69,8 @@ export default function Home () {
                 <Button 
                 mode="contained" 
                 style={[styles.button, { backgroundColor: theme.colors.tertiary }]}
-                labelStyle={[styles.buttonLabel, { color: theme.colors.primary }]}>Let's Eat</Button>
+                labelStyle={[styles.buttonLabel, { color: theme.colors.primary }]}
+                onPress={onEatPress}>Let's Eat</Button>
             </View>
         </View>
     )
